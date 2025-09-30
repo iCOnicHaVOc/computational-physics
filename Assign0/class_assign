@@ -1,0 +1,166 @@
+'''print("hello world")
+# Assignment0, Name- Aditya Raj, Roll no- 2311013
+
+# Question 1
+# Part 1
+
+L = [] # made a list to store odd numbers
+x = 0  # defined 2 variables, y for the while loop to run 20 tumes, x to generate numbers
+y = 20
+
+while y > 0:
+    
+    if x%2==1:
+        L.append(x) # filling the list with odd numbers 
+        y=y-1
+    x = x+1
+   
+
+print(L) 
+print(len(L))
+print(sum(L))
+
+# Part 2
+n=0
+
+def fac(n):
+    if n==0 or n==1:
+        return 1
+    else:
+        return n*fac(n-1)
+
+while n <=8:
+    print(fac(n))
+    n=n+1
+
+# Question 2
+a = 1.25
+r = 0.5
+n = 0
+
+GP = []
+HP = []
+
+for n in range (0,15):
+    x = a*r**n
+    GP.append(x)
+    y = 1/(0.8 + n*r)
+    HP.append(y)
+
+print(sum(GP))
+print(sum(HP))
+
+# Question 3
+#Matrix Multiplication
+# Function to read matrix from a file
+def read_matrix(filename):
+    with open(filename, 'r') as f:
+        matrix = []
+        for line in f:
+            row = [float(num) for num in line.strip().split()]
+            matrix.append(row)
+    return matrix
+
+# Function for matrix multiplication
+def multiply_matrices(A, B):
+    rowsA, colsA = len(A), len(A[0])
+    rowsB, colsB = len(B), len(B[0])
+
+    if colsA != rowsB:
+        raise ValueError("Matrix dimensions do not match for multiplication")
+
+    # Create result matrix filled with 0
+    result = [[0 for _ in range(colsB)] for _ in range(rowsA)]
+
+    # Multiply manually
+    for i in range(rowsA):
+        for j in range(colsB):
+            for k in range(colsA):
+                result[i][j] += A[i][k] * B[k][j]
+    return result
+
+# Function for dot product (for column vectors)
+def dot_product(D, C):
+    if len(D) != len(C):
+        raise ValueError("Vectors must have the same length")
+    return sum(D[i][0] * C[i][0] for i in range(len(D)))
+
+# Function to print matrix nicely
+def print_matrix(matrix):
+    for row in matrix:
+        print(" ".join(f"{val:.2f}" for val in row))
+    print()
+#Another simpler verson
+
+def print_matrix(matrix):
+    for row in matrix:
+        formatted_row = []  # store formatted numbers as strings
+        for val in row:
+            formatted_number = "{:.2f}".format(val)  # format to 2 decimal places
+            formatted_row.append(formatted_number)  # add to the list
+        line = " ".join(formatted_row)  # join with spaces
+        print(line)  # print the row
+    print()  # blank line for spacing
+
+# ---------- MAIN ----------
+# Use raw string paths to avoid invalid escape sequences
+A = read_matrix(r'P346\Assign0\asgn0_matA')
+B = read_matrix(r'P346\Assign0\asgn0_matB')
+C = read_matrix(r'P346\Assign0\asgn0_vecC')
+D = read_matrix(r'P346\Assign0\asgn0_vecD')
+
+# AB
+AB = multiply_matrices(A, B)
+print("AB =")
+print_matrix(AB)
+
+# D·C
+dot_val = dot_product(D, C)
+print(f"D·C = {dot_val:.2f}\n")
+
+# BC
+BC = multiply_matrices(B, C)
+print("BC =")
+print_matrix(BC)
+'''
+#Question 4
+
+import numpy as np
+from Mylib  import *
+
+c1 = MyComplex(0.75, 1.25)
+c2 = MyComplex(-1.5, -2.0)
+c3 = MyComplex(0.0, 0.0)
+
+print("\nTwo complex")
+c1.display_cmplx()
+c2.display_cmplx()
+
+print("\nAdding two complex")
+c3.add_cmplx(c1, c2)
+c3.display_cmplx()
+
+print("\nSubtracting two complex")
+c3.sub_cmplx(c1, c2)
+c3.display_cmplx()
+
+print("\nMultiplying two complex")
+c3.mul_cmplx(c1, c2)
+c3.display_cmplx()
+
+print("\nModulus of two complex")
+mod = c1.mod_cmplx()
+print(f"c1 mod = {mod:.3f}")
+mod = c2.mod_cmplx()
+print(f"c2 mod = {mod:.3f}")
+
+
+
+
+
+
+
+
+
+
+

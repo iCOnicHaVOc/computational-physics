@@ -1,0 +1,172 @@
+class MyComplex:
+    def __init__(self, real, imag=0.0):
+        # Store the real and imaginary parts
+        self.r = real
+        self.i = imag
+
+    def display_cmplx(self):
+        # Print in the form a,bj without spaces
+        print(self.r, ",", self.i, "j", sep="")
+
+    def add_cmplx(self, c1, c2):
+        # Add corresponding real and imaginary parts
+        self.r = c1.r + c2.r
+        self.i = c1.i + c2.i
+        return MyComplex(self)
+
+    def sub_cmplx(self, c1, c2):
+        # Subtract corresponding real and imaginary parts
+        self.r = c1.r - c2.r
+        self.i = c1.i - c2.i
+        return MyComplex(self)
+
+    def mul_cmplx(self, c1, c2):
+        # Multiply using (a+bi)(c+di) = (ac - bd) + (ad + bc)i
+        self.r = c1.r * c2.r - c1.i * c2.i
+        self.i = c1.i * c2.r + c1.r * c2.i
+        return MyComplex(self)
+
+    def mod_cmplx(self):
+        # Modulus: sqrt(real^2 + imag^2) without NumPy
+        return (self.r ** 2 + self.i ** 2) ** 0.5
+
+
+# Function for matrix multiplication
+def multiply_matrices(A, B):
+    rowsA, colsA = len(A), len(A[0])
+    rowsB, colsB = len(B), len(B[0])
+
+    if colsA != rowsB:
+        raise ValueError("Matrix dimensions do not match for multiplication")
+
+    # Create result matrix filled with 0
+    result = [[0 for _ in range(colsB)] for _ in range(rowsA)]
+
+    # Multiply manually
+    for i in range(rowsA):
+        for j in range(colsB):
+            for k in range(colsA):
+                result[i][j] += A[i][k] * B[k][j]
+    return result
+
+# class randGEN():
+#     def __init__(self):
+#         self.rand= []
+#         self.index=[]
+#     def LCG(self,p,q,r,k):
+#         for i in range (0,500): 
+#             self.index.append(i)
+#             k = (p*k+q)%r 
+#             f = k/r
+#             self.rand.append(f)
+#         print(self.rand)
+#         print(self.index)
+#         return randGEN(self)
+    
+# THIS GIVE A SINGLE RANDOM NO. AS OUTPUT
+# def LCG(p,q,r,k,n):
+#     for i in range (0,n): 
+#         k = (p*k+q)%r 
+#         f = k/r
+#     return f
+
+# ploting the lists 
+import matplotlib.pyplot as plt 
+#define x and y , as a python list 
+def Plot(x, y , title='Pi plot 2000 throws', xlabel='index', ylabel='Values of Pi',file_name='sample_plot.png'):
+    plt.figure(figsize=(11, 6))
+    plt.plot(x, y, marker='o', linestyle='-', color='b')
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.grid(True)  
+    plt.savefig(file_name)
+    plt.show()
+
+#GIVES A LIST WITH RANDOM NUMBERS 
+def LCG(k,it):
+    p=1103515245
+    q=12345
+    r=32768
+    Rand = []
+    index = []
+    for i in range (0,it): 
+        index.append(i)
+        k = (p*k+q)%r 
+        f = k/r
+        Rand.append(f)
+    return Rand , index
+
+def print_matrix(matrix, name="Matrix"):
+    print(f"\n{name}:")
+    for row in matrix:
+        print("  ".join(f"{val:10.4f}" for val in row))   # 4 decimal places
+
+# Gauss jordan elemination 
+def GaussJordan(X,Y):
+    m= [row[:] for row in X]
+    var = Y[:]
+    row = len(m)
+    colu = len(m[0])
+    aug=[]
+
+    for i in range (row):
+        l = X[i][:]
+        l.append(Y[i])
+        aug.append(l)
+
+    # # gives the aug matrix 
+    # now for a given row i will loop over all columns 
+    ro = 0
+    for col in range(colu):
+        max_val = abs(X[ro][col])
+        sel = ro
+        for r in range (ro,row):
+            if abs(X[r][col]) > max_val:
+                max_val = abs(X[r][col])
+                sel = r
+        # this swaps the choosen pivot row with current row
+        aug[ro], aug[sel] = aug[sel], aug[ro] # swap
+        pivot_val = aug[ro][col]
+        aug[ro] = [v / pivot_val for v in aug[ro]] # making pivot 1
+        for r in range(row): # making all element below pivot 0
+            if r != ro:
+                factor = aug[r][col]
+                aug[r] = [aug[r][c] - factor * aug[ro][c] for c in range(colu+1)]
+        ro +=1 #looping over all rows
+        if ro == row :
+            break
+    # making a different solution matrix
+    x = [aug[i][colu] for i in range(row)]
+    return aug, x 
+
+# Doolittle approch
+def LU_decom(M):
+    n = len(M)
+    c = len(M[0])
+
+    L = [[0.0]*n for _ in range(n)]
+    U = [[0.0]*n for _ in range(n)]
+
+    for j in range(c):
+        U[0][j]= M[0][j]
+        for i in range(n):
+            if i <=j:
+                sigma_u = 0
+                for k in range(0,i):
+                    sigma_u += L[i][k]*U[k][j]
+                U[i][j] = M[i][j] - sigma_u
+            else:
+                sigma_l = 0
+                for ko in range(0,j):
+                    sigma_l += L[i][ko]*U[ko][j]
+                L[i][j] = (M[i][j] - sigma_l)/U[j][j]
+    for i in range(n):
+        L[i][i] = 1.0
+        
+    return L,U
+
+
+    
+    
+    
