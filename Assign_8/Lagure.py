@@ -12,7 +12,7 @@ def fun2(x):
 def fun3(x):
     return 2.0*x**5 - 19.5*x**3 + 0.5*x**2 + 13.5*x - 4.5
 
-
+ 
 initial_guesses = [3,1,-2,-1]  
 all_roots = find_all_roots(fun1, Eq1, initial_guesses)
 
