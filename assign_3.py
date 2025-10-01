@@ -2,13 +2,13 @@
 
 # Question 1 (from Doolittle)
 from My2lib import *
-'''A = [[1,2,4], [3,8,14], [2,6,13]]
+A = [[1,2,4], [3,8,14], [2,6,13]]
 
 lo,uo = LU_decom(A)
 res = multiply_matrices(lo,uo)
 
 print(res)
-'''
+
 '''My solution
 L=[[1.0, 0.0, 0.0], [3.0, 1.0, 0.0], [2.0, 1.0, 1.0]] 
 U =[[1, 2, 4], [0.0, 2.0, 2.0], [0.0, 0.0, 3.0]]

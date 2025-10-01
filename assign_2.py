@@ -5,7 +5,7 @@ from My2lib import GaussJordan
 A = [[0,2,5],[3,-1,2],[1,-1,3]]
 b = [1,-2,3]
 
-z,s = GaussJordan(A)
+z,s = GaussJordan(A,b)
 print("Aug matrix -",z, '\nsolution -', s)
 
 # Question 2 

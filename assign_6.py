@@ -11,14 +11,14 @@ def fun2(x):
 
 
 #Question_!
-'''
+
 print("For question 1\n")
-x,y = root_bisection(fun1,3,4,1e-6,1e-6)
+x,y = root_bisection(fun1,3,4,1e-6,1e-6,1e-6)
 print("By bisection- Root (c) = ", x, 'Reached in',y, 'Steps')
 print()
-x1,y1 = root_falsi(fun1,1,2,1e-6,1e-6)
+x1,y1 = root_falsi(fun1,1,2,1e-6,1e-6,1e-6)
 print("By Root Falsi - Root (c) = ", x1, 'Reached in',y1, 'Steps')
-'''
+
 # Question_2 
 print()
 print("For Question 2\n")
@@ -26,7 +26,7 @@ q,w,e = bracket(fun2,2,4,0.05)
 print('Roots are in interval [',q,',',w,'] and reached in',e, "steps")
 print('To verify the interval, we check the roots\n')
 # to check
-tt, rr = root_falsi(fun2,-1,7,1e-6,1e-6)
+tt, rr = root_falsi(fun2,-1,7,1e-6,1e-6,1e-6)
 print("By Root Falsi - Root (c) = ", tt, 'Reached in',rr, 'Steps')
 
 '''

@@ -126,7 +126,7 @@ print_matrix(BC)
 #Question 4
 
 import numpy as np
-from Mylib  import *
+from My2lib  import *
 
 c1 = MyComplex(0.75, 1.25)
 c2 = MyComplex(-1.5, -2.0)
