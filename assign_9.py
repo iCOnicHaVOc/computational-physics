@@ -22,3 +22,8 @@ all_roots = find_all_roots(fun2, Eq2, initial_guesses)
 initial_guesses = [0,0,1.85,0,0]  
 all_roots = find_all_roots(fun3, Eq3, initial_guesses)
 
+njifebv
+kjebvjef
+j
+#example change in assign9
+print("Roots of Eq1 are - ", all_roots) 
