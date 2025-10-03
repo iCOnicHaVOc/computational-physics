@@ -7,7 +7,7 @@ def fun1(x1,x2,x3):
     f1 = x1**2 + x2 -37
     f2 = x1 - x2**2 - 5
     f3 = x1+x2+x3 - 3
-    return [ f1,f2,f3]
+    return [f1,f2,f3]
 def G(x1, x2, x3):
     new_x1 = math.sqrt(37 - x2)
     new_x2 = math.sqrt(x1 - 5)
