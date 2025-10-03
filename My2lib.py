@@ -293,6 +293,11 @@ def Check_sym_matrix(M):
 
 
 def root_bisection(fx,a,b,delta,eps,beta):
+    # fx = function whose root is to be found
+    # a,b = initial guesses, should bracket the root
+    # delta = function value tolerance (closenwss of f(c) to 0)
+    # eps = interval size tolerance
+    # beta = bracketing expansion factor
 
     if fx(a)*fx(b) >= 0:
         print("The root is not bracketed, let me do it for ya")
@@ -320,12 +325,17 @@ def root_bisection(fx,a,b,delta,eps,beta):
             return c,steps
         if fc*fx(a) < 0:
             b = c
-        else:
+        else:      #vulnarable if fc == 0,fix it
             a = c
         steps+=1
 
 # Root Falsi with bracketing function in it
 def root_falsi(fx,a,b,delta,eps,beta):
+    # fx = function whose root is to be found
+    # a,b = initial guesses, should bracket the root
+    # delta = function value tolerance (closenwss of f(c) to 0)
+    # eps = interval size tolerance
+    # beta = bracketing expansion factor
 
     if fx(a)*fx(b) >= 0:
         print("The root is not bracketed, let me do it for ya")
@@ -357,7 +367,12 @@ def root_falsi(fx,a,b,delta,eps,beta):
             a = c
         steps+=1
 
+#bracketing function,(integrated in bisection and falsi)
 def bracket(fx,a,b,beta):
+    # fx = function whose root is to be found
+    # a,b = initial guesses, should bracket the root
+    # beta = bracketing expansion factor
+
     fa,fb=fx(a),fx(b)
     steps = 0
 
@@ -372,6 +387,13 @@ def bracket(fx,a,b,beta):
     return a,b,steps
 
 def fix_point(f,gf,x0,delta,eps,itter):
+    # f = function whose root is to be found
+    # gf = g(x) function for fixed point iteration
+    # x0 = initial guess
+    # delta = function value tolerance (closenwss of f(c) to 0
+    # eps = interval size tolerance
+    # itter = max itterations (use to stop infinite loop)
+    
     x1 = x0
     step = 0
     
@@ -389,6 +411,13 @@ def fix_point(f,gf,x0,delta,eps,itter):
     return None, step
 
 def newton_raphson(f,df,x0,delta,eps,itter):
+    # f = function whose root is to be found
+    # df = derivative of f
+    # x0 = initial guess
+    # delta = function value tolerance (closenwss of f(c) to 0)
+    # eps = interval size tolerance
+    # itter = max itterations (use to stop infinite loop)
+    
     x1 = x0
     step = 0
     
@@ -407,15 +436,23 @@ def newton_raphson(f,df,x0,delta,eps,itter):
 
 
 def fix_point_multi(f, gf, x0, delta, eps, itter):
-    x1 = x0[:]  
+    # f = function whose root is to be found
+    # gf = g(x) function for fixed point iteration
+    # x0 = initial guess
+    # delta = function value tolerance (closenwss of f(c) to 0
+    # eps = interval size tolerance
+    # itter = max itterations (use to stop infinite loop)
+    
+    x1 = x0[:]  #copy the list of initial guess
     step = 0
     
     while step < itter:
-        x2 = gf(*x1)  # unpack list into arguments
+        x2 = gf(*x1)  # unpack list into arguments, x2 is a list
         step += 1
 
         # compute max difference
-        diff = max(abs(x2[i] - x1[i]) for i in range(len(x1)))
+        mod = (sum(x**2 for x in x2))**0.5
+        diff = (sum((x2[i] - x1[i])**2 for i in range(len(x1))))**0.5 / mod
         f_val = f(*x2)
         f_norm = max(abs(val) for val in f_val)
 
@@ -429,7 +466,16 @@ def fix_point_multi(f, gf, x0, delta, eps, itter):
     return None, step
 
 def newton_raphson_multi(F, J, x0, delta, eps, itter, inv_func, matmul):
-    x1 = x0[:]  
+    # F = function whose root is to be found, returns a list
+    # J = Jacobian of F, returns a matrix 
+    # x0 = initial guess, a list
+    # delta = function value tolerance (closenwss of f(c) to 0)
+    # eps = interval size tolerance
+    # itter = max itterations (use to stop infinite loop)
+    # inv_func = function to compute inverse of a matrix
+    # matmul = function to compute matrix multiplication
+
+    x1 = x0[:]  # copy the list of initial guess
     step = 0
 
     while step < itter:
@@ -449,9 +495,11 @@ def newton_raphson_multi(F, J, x0, delta, eps, itter, inv_func, matmul):
         x2 = [x1[i] - update[i] for i in range(len(x1))]
         step += 1
 
-        # convergence checks
-        diff = max(abs(x2[i] - x1[i]) for i in range(len(x1)))
-        f_norm = max(abs(val) for val in f_val)
+        #compute difference
+        mod = (sum(x**2 for x in x2))**0.5
+        diff = (sum((x2[i] - x1[i])**2 for i in range(len(x1))))**0.5 / mod
+        f_val2 = F(*x2)
+        f_norm = max(abs(val) for val in f_val2)
 
         if diff < eps or f_norm < delta:
             print("The value of function at root is", f_val)
@@ -462,7 +510,8 @@ def newton_raphson_multi(F, J, x0, delta, eps, itter, inv_func, matmul):
     print("Did not converge within the given iterations")
     return None, step
 
-
+# differentiation fun, 
+# when polynomial is given in list of cofficients of form [a_n, a_(n-1),..., a_1, a_0]
 def differentiation(coeff):
     n = len(coeff)
     new_coeff = [coeff[i] * (n-1-i) for i in range(n-1)]
@@ -471,91 +520,87 @@ def differentiation(coeff):
 
 def synthetic_division(coeffs, r):
     n = len(coeffs)
-    qu = [0] * (n - 1)
+    qu = [0] * (n - 1) #list of n-1 zeros for quotient
     qu[0] = coeffs[0]
 
-    for i in range(1, n-1):
+    for i in range(1, n-1): #loop leaving 1st coff (preset above) till 2nd last (len -2, which is n-1 in 0 index)
         qu[i] = coeffs[i] + qu[i-1] * r
     re = coeffs[-1] + qu[-1] * r
 
     return qu, re
 
-def lagurre(x0, fx, coeffs, delta, eps, max_iter):
-    n = len(coeffs) - 1
-    x = x0
-    steps = 0
+# takes list of cofficients, can also take a value to be inserted and returns a function
+# or a result with the inserted value
+def fun_builder(coff):
+    # coff is list of cofficients of polynomial in decreasing order of power
+    def f(x):
+        res = 0
+        n = len(coff)
+        for i in range(n):
+            res += coff[i] * (x ** (n - 1 - i))
+        return res
+    return f
 
-    for _ in range(max_iter):
-        steps += 1
-        P = fx(x)
-        if abs(x) > 1e6:  # or a tighter bound like 1e4
-            print(f"x = {x} is too large. Skipping this guess.")
-            return None, steps
+def lagurre(fun,x0,itter,eps,delta,syn_div,diff,fun_build):
+    # fun = function in the form of list of cofficients
+    # x0 = list of initial guess
+    # itter = max itterations (use to stop infinite loop)
+    # eps = interval size tolerance
 
+    root = []
+    steps = []
 
-        if abs(P) < delta:
-            print('Root is:', x, 'f(root) =', P, 'Steps taken:', steps)
-            return x, steps
+    for guess in x0:
+        r1 = guess
+        for i in range(itter):
+            n = len(fun)-1 # degree of polynomial
+            dfun = diff(fun)
+            ddfun = diff(dfun)
+            fval = fun_build(fun)(r1)
 
-        d1_coeffs = differentiation(coeffs)
-        d2_coeffs = differentiation(d1_coeffs)
-        P1 = 0
-        power = len(d1_coeffs) - 1
-        for c in d1_coeffs:
-            P1 += c * x**power
-            power -= 1
+            if fval == 0:
+                root.append(r1)
+                steps.append(i+1)
+                print("The value of function at root is", fun_build(fun)(r1))
+                break
+            else:
+                G = fun_build(dfun)(r1)/fval
+                H = G**2 - fun_build(ddfun)(r1)/fval
 
-        P2 = 0
-        power = len(d2_coeffs) - 1
-        for c in d2_coeffs:
-            P2 += c * x**power
-            power -= 1
+            discriminant = (n-1)*(n*H-G**2)
+            tol = 1e-18
+            if discriminant < -tol:
+                print("Complex root encountered (discriminant < 0). Skipping this guess.")
+                break
+            elif discriminant < 0:
+                sqrt_term = 0.0
+            else:
+                sqrt_term = math.sqrt(discriminant)
 
+            rem1 = G + sqrt_term
+            rem2 = G - sqrt_term
+            rem = max(abs(rem1), abs(rem2))
 
-        G = P1 / P
-        H = G**2 - P2 / P
-        discriminant = (n-1)*(n*H - G**2)
-        if discriminant < 0:
-            print("Complex root encountered. Skipping this guess.")
-            return x, steps  
-        sqrt_term = discriminant**0.5
+            if abs(rem) < tol:
+                print("Denominator too small, possible division by zero. Skipping this guess.")
+                break
+            a = n/rem
+            r2 = r1 - a
 
-        if abs(G + sqrt_term) > abs(G - sqrt_term):
-            denom = G + sqrt_term 
+            if abs(r2 - r1) < eps or abs(fun_build(fun)(r2)) < delta:
+                root.append(r2)
+                steps.append(i+1)
+                print("The value of function at root is", fun_build(fun)(r2))
+                break
+            r1 = r2
+
         else:
-            denom = G - sqrt_term
-        a = n / denom
-        x_new = x - n / denom
+            print(" root Did not converge within the given iterations")
+            root.append(r1)
+            steps.append(itter)
 
-        if abs(x_new - x) < eps :
-            print("The value of function at root is", P)
-            return x_new, steps
+        qx,re = syn_div(fun,r1)
+        if abs(re) > 1e-4:
+            print('Non-zero reminder',re)
+    return root, steps
 
-        x = x_new
-
-    print('Did not converge within', max_iter, 'iterations. Last guess:', x, 'f(x) =', fx(x))
-    return x, steps
-
-def find_all_roots(fx, coeffs, guesses, delta=1e-6, eps=1e-6, max_iter=100):
-    roots = []
-    current_coeffs = coeffs[:]  # copy to avoid modifying original
-
-    for guess in guesses:
-        if len(current_coeffs) <= 1:
-            break  # no more roots to find
-
-        root, steps = lagurre(guess, fx, current_coeffs, delta, eps, max_iter)
-        if root is None:
-            continue
-
-        roots.append(root)
-
-        # Deflate polynomial
-        quotient, remainder = synthetic_division(current_coeffs, root)
-
-        # Stop if remainder is too big (root not accurate enough)
-        '''if abs(remainder) > delta:
-            print(f"Warning: remainder after deflation = {remainder}")'''
-
-        current_coeffs = quotient 
-    return roots
