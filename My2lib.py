@@ -49,7 +49,7 @@ def multiply_matrices(A, B):
         for j in range(colsB):
             for k in range(colsA):
                 result[i][j] += A[i][k] * B[k][j]
-    return result
+    return result #A matrix (list of lists)
 
 # class randGEN():
 #     def __init__(self):
@@ -85,11 +85,13 @@ def Plot(x, y , title='Pi plot 2000 throws', xlabel='index', ylabel='Values of P
     plt.savefig(file_name)
     plt.show()
 
-#GIVES A LIST WITH RANDOM NUMBERS 
+#GIVES A LIST WITH RANDOM NUMBERS BETWEEN 0 AND 1 and THEIR INDEX
 def LCG(k,it):
-    p=1103515245
-    q=12345
-    r=32768
+    # k = seed
+    # it = no. of random numbers to be generated
+    p=1103515245 # a (in sir slide )
+    q=12345 # c (in sir slide )
+    r=32768 # m (in sir slide )
     Rand = []
     index = []
     for i in range (0,it): 
@@ -99,6 +101,31 @@ def LCG(k,it):
         Rand.append(f)
     return Rand , index
 
+# to store a list in a txt file
+def store_list(file_path, lst):
+    with open(file_path, 'w') as file:
+        for item in lst:
+            file.write(f"{str(item)}\n")
+
+# to read a list from a txt file
+def read_list(file_path):
+    with open(file_path, 'r') as file:
+        lst = [float(line.strip()) for line in file]
+    return lst
+
+
+# to store a 2D list (matrix) in a txt file
+def store_matrix(file_path, matrix):
+    with open(file_path, 'w') as file:
+        for row in matrix:
+            file.write(' '.join(map(str, row)) + '\n')
+
+# to read a 2D list (matrix) from a txt file
+def read_matrix(file_path):
+    with open(file_path, 'r') as file:
+        matrix = [list(map(float, line.strip().split())) for line in file]
+    return matrix
+
 def print_matrix(matrix, name="Matrix"):
     print(f"\n{name}:")
     for row in matrix:
@@ -106,6 +133,9 @@ def print_matrix(matrix, name="Matrix"):
 
 # Gauss jordan elemination 
 def GaussJordan(X,Y):
+    # X is the coeff matrix
+    # Y is the const matrix
+    # Xx = Y
     m= [row[:] for row in X]
     var = Y[:]
     row = len(m)
@@ -113,22 +143,24 @@ def GaussJordan(X,Y):
     aug=[]
 
     for i in range (row):
-        l = X[i][:]
-        l.append(Y[i])
-        aug.append(l)
+        l = X[i][:] # l = [row i of X]
+        l.append(Y[i]) # l = [row i of X with Y[i] appended]
+        aug.append(l) 
 
-    # # gives the aug matrix 
     # now for a given row i will loop over all columns 
     ro = 0
     for col in range(colu):
         max_val = abs(X[ro][col])
-        sel = ro
+        sel = ro # selected row index with max pivot element in a column
+        # this loop finds the max pivot element in the current column
         for r in range (ro,row):
             if abs(X[r][col]) > max_val:
                 max_val = abs(X[r][col])
                 sel = r
+
         # this swaps the choosen pivot row with current row
         aug[ro], aug[sel] = aug[sel], aug[ro] # swap
+
         pivot_val = aug[ro][col]
         aug[ro] = [v / pivot_val for v in aug[ro]] # making pivot 1
         for r in range(row): # making all element below pivot 0
@@ -151,8 +183,10 @@ def LU_decom(M):
     L = [[0.0]*n for _ in range(n)]
     U = [[0.0]*n for _ in range(n)]
 
+    for i in range(n):
+        L[i][i] = 1.0
+        
     for j in range(c):
-        U[0][j]= M[0][j]
         for i in range(n):
             if i <=j:
                 sigma_u = 0
@@ -164,11 +198,12 @@ def LU_decom(M):
                 for ko in range(0,j):
                     sigma_l += L[i][ko]*U[ko][j]
                 L[i][j] = (M[i][j] - sigma_l)/U[j][j]
-    for i in range(n):
-        L[i][i] = 1.0
-        
+    
     return L,U
 
+# from eq Ax = b, we make L(LT *X) = b
+# L * y = b
+# LT * x = y
 def forward_substitution(L, b):
     n = len(b)
     y = [0.0] * n
@@ -182,6 +217,14 @@ def backward_substitution(LT, y):
     for i in reversed(range(n)):
         x[i] = (y[i] - sum(LT[i][j] * x[j] for j in range(i + 1, n))) / LT[i][i]
     return x
+
+def determinant(A):
+    n = len(A)
+    L, U = LU_decom(A)
+    det = 1.0
+    for i in range(n):
+        det *= U[i][i]
+    return det
 
 def inverse_matrix(A):
     n = len(A)
@@ -197,7 +240,9 @@ def inverse_matrix(A):
         A_inv.append(x)
     return [list(col) for col in zip(*A_inv)]
 
-def GJacobi (M, x, precision, itter, guess=None):
+# Gjacobi method, Martix should be diagonal dominiant, 
+def GJacobi (M, x, precision, itter, guess):
+    # for equation M*a=x
     row_M = len(M)
     row_b = len(x)
     col_M = len(M[0])
@@ -231,6 +276,8 @@ def GJacobi (M, x, precision, itter, guess=None):
     return input_val , steps
 
 def CholeskyD(M):
+    # M should be symmetric and positive definite
+    # returns L and LT (U is LT here)
     row_M = len(M)
     col_M = len(M[0])
     M_l = [[0.0 for _ in range(col_M)] for _ in range(row_M) ]
@@ -250,7 +297,7 @@ def CholeskyD(M):
     return M_l , M_lt
 
 
-def GSeidel(M,x,precision,itter,guess=None):
+def GSeidel(M,x,precision,itter,guess):
     row_M = len(M)
     row_b = len(x)
     col_M = len(M[0])
