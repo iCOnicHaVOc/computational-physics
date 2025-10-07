@@ -3,18 +3,18 @@ import numpy as np
 # Name = Aditya Raj, Roll no- 2311013
 # Question 1
 
-# x = 0.1
-# c = 3.7
-# k= 9
-# l = [] # list to store generated random numbers
-# X=[]  # list to store i + k th number from list l
-# oi = []
-# def random(x,c): # def to generate random numbers
-#     for i in range (0,1000):
-#         oi.append(i)
-#         x = c*x*(1-x)
-#         l.append(x)
-#     return l
+x = 0.1
+c = 3.7
+k= 9
+X=[]  # list to store i + k th number from list l
+def random(x,c): # def to generate random numbers
+     l = [] # list to store generated random numbers
+     oi = []
+     for i in range (0,1000):
+         oi.append(i)
+         x = c*x*(1-x)
+         l.append(x)
+     return l
 
 # y = random(x,c) # Calling the function
 # for i in range (0,len(l)-k): # appending i+k th element from list l
@@ -67,10 +67,10 @@ def check(x_list,y_list):
     Pi_n =[]
     total_points = len(x_list)
     inside_pi=0
-    for idx,(x,y) in enumerate(zip(x_list,y_list), start=1):
-        if x**2+y**2<=1:
-            inside_pi +=1
-        pi_est = 4*(inside_pi/idx)
+    for point_num, (x, y) in enumerate(zip(x_list, y_list), start=1):
+        if x**2 + y**2 <= 1:
+            inside_pi += 1
+        pi_est = 4 * (inside_pi / point_num)
         Pi_n.append(pi_est)
     return Pi_n
 

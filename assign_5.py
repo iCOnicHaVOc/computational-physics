@@ -14,7 +14,7 @@ B2 = [20,15,92,51,15]
 print('Solution for Q1\n')
 print(Check_sym_matrix(A1))
 
-jj,ll = GSeidel(A1,B1, 1e-6,50)
+jj,ll = GSeidel(A1,B1, 1e-6,50,None)
 print("By Gauss-Seidel- Solution is",jj, 'and is achived in', ll, 'steps')
 
 kk,pp = CholeskyD(A1)
@@ -22,7 +22,7 @@ y = forward_substitution(kk,B1)
 x = backward_substitution(pp, y)
 print("By Cholesky- Solution is:", x)
 
-er,tr = GJacobi(A1,B1,1e-6,50)
+er,tr = GJacobi(A1,B1,1e-6,50,None)
 print("By Jacobi- Solution is",er, 'and is achived in',tr, 'steps')
 
 
@@ -36,10 +36,10 @@ B2_m = [51,15,15,20,92]
 
 print('Solution for Q2\n')
 
-jj1,ll1 = GSeidel(A2_m,B2_m, 1e-6,50)
+jj1,ll1 = GSeidel(A2_m,B2_m, 1e-6,50,None)
 print("By Gauss-Seidel- Solution is",jj1, 'and is achived in', ll1, 'steps')
 
-er1,tr1 = GJacobi(A2_m,B2_m,1e-6,60)
+er1,tr1 = GJacobi(A2_m,B2_m,1e-6,60,None)
 print("By Jacobi- Solution is",er1, 'and is achived in',tr1, 'steps')
 
 
