@@ -651,3 +651,23 @@ def lagurre(fun,x0,itter,eps,delta,syn_div,diff,fun_build):
             print('Non-zero reminder',re)
     return root, steps
 
+def midpoint_integration(fx, a, b, n):
+    h = (b-a)/n
+    m_point = 0
+    area = 0
+    
+    for i in range(n):
+        m_point = (a+(i*h) + a+(i+1)*h)/2 # new midpoint for each subinterval
+        area += h*fx(m_point) # area of each rectangle
+    return area
+
+
+def trapZ_integration(fx,a,b,n):
+    h = (b-a)/n
+    area = 0
+    for i in range(1,n):
+        x0 = a + (i-1)*h
+        x0_new = a + i*h
+        area += ((fx(x0)+ fx(x0_new))*h)/2
+
+    return area
