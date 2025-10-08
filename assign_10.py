@@ -27,6 +27,7 @@ for i in I:
         print("The value of the integral using midpoint with N=", n, " is", q)
 
 
+
 # ======================MY SOLUTION=========================
 """For function <function f1 at 0x000001FF1A58FE20>
 In the interval [ 1 , 2 ]
