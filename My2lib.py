@@ -698,7 +698,9 @@ def monte_carlo_int(fx, a,b, N, rand_gen, seed, tol):
     if N == None:
         N = 100 
     if seed == None:
-        seed = 42
+        seed = 123456
+    if tol == None:
+        tol = 1e-4
 
     FN = 0 
     Ns = []   # store N values
