@@ -18,7 +18,7 @@ print("The value of function 1 using simpson's rule with N= 28 is", int1)
 int = int_simp(f2, 0, math.pi/2, 28)
 print("The value of function 2 using simpson's rule with N= 28 is", int)
 
-o,p,q,r = monte_carlo_int(f3,-1,1,100,LCG,123456,1e-3)
+o,p,q,r,t = monte_carlo_int(f3,-1,1,100,LCG,123456,1e-3)
 print("The value of the integral using monte carlo accurate upto 4 decimal place is", o, "with standard deviation", p)
 
 # Plot convergence
@@ -27,6 +27,12 @@ Plot(q,r,
      xlabel='Number of random points (N)',
      ylabel='Estimated Integral (F_N)',
      file_name='DATA\monte_carlo_convergence.png')
+# plot of convergence for standard deviation
+Plot(q,t,
+     title='Convergance of Standard Deviation of Monte Carlo Integration for sin^2(x)',
+     xlabel='Number of random points (N)',
+     ylabel='Standard Deviation (σ_N)',
+     file_name='DATA\monte_carlo_stddev_convergence.png')
 
 # ======================MY SOLUTION=========================
 '''
@@ -45,4 +51,5 @@ Desired tolerance achieved.
 The value of the integral using monte carlo accurate upto 4 decimal place is 0.5453881646654606 with standard deviation 0.22307093890810584
 
 I HAVE SAVED THE PLOT IN THE FOLDER DATA AS monte_carlo_convergence.png
+I HAVE SAVED THE PLOT IN THE FOLDER DATA AS monte_carlo_stddev_convergence.png
 '''

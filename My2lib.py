@@ -703,7 +703,7 @@ def monte_carlo_int(fx, a,b, N, rand_gen, seed, tol):
     FN = 0 
     Ns = []   # store N values
     FNs = []  # store corresponding F_N values
-    
+    stds = [] # store standard deviations
     convergence = False
     while not convergence:
         s,l = rand_gen(seed,N) # takes seed, generates N random numbers in [0,1]
@@ -726,6 +726,7 @@ def monte_carlo_int(fx, a,b, N, rand_gen, seed, tol):
 
         Ns.append(N)
         FNs.append(F_N)
+        stds.append(std)
         
         if abs(F_N - FN) < tol:
             print("Desired tolerance achieved.")
@@ -736,4 +737,4 @@ def monte_carlo_int(fx, a,b, N, rand_gen, seed, tol):
 
         FN = F_N
 
-    return F_N, std , Ns, FNs
+    return F_N, std , Ns, FNs, stds
