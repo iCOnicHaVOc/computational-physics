@@ -671,3 +671,69 @@ def trapZ_integration(fx,a,b,n):
         area += ((fx(x0)+ fx(x0_new))*h)/2
 
     return area
+
+def int_simp(f, a, b, N):
+    if N == None:
+        N = 100
+    if N % 2 != 0:
+        raise ValueError("N must be even for Simpson's rule")
+    h = (b - a) / N
+    inte = f(a) + f(b)
+    i=1
+    while i!=N:
+        x=a+i*h
+        if i%2==0:
+            inte+=2*f(x)
+        else:
+            inte+=4*f(x)
+        i+=1
+    return (h/3)*inte
+
+def monte_carlo_int(fx, a,b, N, rand_gen, seed, tol):
+    # fx = function to be integrated
+    # [a,b] = interval of integration
+    # N = number of random points
+    # rand_gen = function to generate N random numbers in [0,1]
+    # seed = seed for random number generator
+    if N == None:
+        N = 100 
+    if seed == None:
+        seed = 42
+
+    FN = 0 
+    Ns = []   # store N values
+    FNs = []  # store corresponding F_N values
+    
+    convergence = False
+    while not convergence:
+        s,l = rand_gen(seed,N) # takes seed, generates N random numbers in [0,1]
+        p = [] # list of random numbers in [a,b]
+        # takes list of random numbers in [0,1] and converts them to [a,b]
+        for i in s:
+            x = a + (b-a)*i
+            p.append(x)
+
+        total = 0
+        total_sq = 0
+        for j in p:
+            val = fx(j)
+            total += val
+            total_sq += val**2
+
+        F_N = ((b-a)/N) * total
+        var = ((total_sq) / N )- (total/N)**2
+        std = math.sqrt(var)
+
+        Ns.append(N)
+        FNs.append(F_N)
+        
+        if abs(F_N - FN) < tol:
+            print("Desired tolerance achieved.")
+            convergence = True
+        else:
+            N *= 2
+            print("Increasing number of points to", N)
+
+        FN = F_N
+
+    return F_N, std , Ns, FNs
