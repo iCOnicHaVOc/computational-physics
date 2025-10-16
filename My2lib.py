@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 class MyComplex:
     def __init__(self, real, imag=0.0):
@@ -740,3 +741,25 @@ def monte_carlo_int(fx, a,b, N, rand_gen, seed, tol):
         FN = F_N
 
     return F_N, std , Ns, FNs, stds
+
+def gaussian_quad(f, a, b, eps, value):
+    # value = when comparing the value to the actual integral value
+    n = 2
+    while True:
+        # numpy Legendre polynomial of degree n
+        x, w = np.polynomial.legendre.leggauss(n)
+        
+        # Change of interval from [-1, 1] to [a, b]
+        trans_x = 0.5 * (b - a) * x + 0.5 * (b + a)
+        trans_y = 0.5 * (b - a) * w
+        
+        integral = 0.0
+        for xi, wi in zip(trans_x, trans_y):
+            integral += wi * f(xi)
+            
+        if abs(integral - value) < eps:
+            print("Desired tolerance achieved with n =", n)
+            break
+        n += 1
+    return integral , n
+
