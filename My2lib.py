@@ -653,6 +653,7 @@ def lagurre(fun,x0,itter,eps,delta,syn_div,diff,fun_build):
     return root, steps
 
 def midpoint_integration(fx, a, b, n):
+    # interval [a,b], n subintervals
     h = (b-a)/n
     m_point = 0
     area = 0
@@ -666,7 +667,7 @@ def midpoint_integration(fx, a, b, n):
 def trapZ_integration(fx,a,b,n):
     h = (b-a)/n
     area = 0
-    for i in range(1,n):
+    for i in range(1,n+1): # missing the last interval due to range n ---> change it to n+1
         x0 = a + (i-1)*h
         x0_new = a + i*h
         area += ((fx(x0)+ fx(x0_new))*h)/2
