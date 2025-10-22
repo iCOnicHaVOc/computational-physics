@@ -764,3 +764,53 @@ def gaussian_quad(f, a, b, eps, value):
         n += 1
     return integral , n
 
+
+# for plotting two lists for comparison and saving the plot
+def plot_comparison(x1, y1, x2, y2,
+                    title='Analytical vs Estimated',
+                    xlabel='x', ylabel='y',
+                    file_name = 'comparision_plot.png'):
+    plt.figure(figsize=(11, 6))  
+    plt.plot(x1, y1, label='Analytical solution', color='blue', marker='o', linestyle='-')
+    plt.plot(x2, y2, label='Estimated solution', color='red', marker='x', linestyle='--')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(file_name)
+    plt.show()
+
+
+def forward_euler(f, x0, y0, h,a , b ):
+    # y0 here is the initial value of y at x0
+    # b and a are range interval
+    x = x0
+    y = y0 # y at x0
+    x_val = [x0]
+    y_val = [y0]
+    n = int((b - a) / h)  # number of steps
+    for i in range(n):
+        y = y + h * f(x, y)  # Forward Euler formula
+        x = x + h
+        x_val.append(x)
+        y_val.append(y)
+    return x_val, y_val
+
+
+def predictor_corrector(f, x0, y0, h, a, b):
+    x = x0
+    y = y0
+    x_val = [x0]
+    y_val = [y0]
+    n = int((b - a) / h)
+    for i in range(n):
+        # Euler's method
+        y_pred = y + h * f(x, y)
+        x_new = x + h
+        # Corrector step 
+        y = y + (h / 2) * (f(x, y) + f(x_new, y_pred))
+        x = x_new
+        x_val.append(x)
+        y_val.append(y)
+    return x_val, y_val
