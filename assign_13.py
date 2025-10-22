@@ -31,9 +31,13 @@ for i in np.arange(0, (math.pi/5), 0.1):
     y2_ana.append(ana_fun2(i))
 
 # Question 1
+ff1, gg1 = forward_euler(fun1, 0, 0, 0.1, 0, 2)
+plot_comparison(x1_ana, y1_ana, ff1, gg1, 'Euler Method vs Analytical Solution for Question 1', 'x', 'y', 'DATA\euler_for_EQ1.png' )
 f1, g1 = predictor_corrector(fun1, 0, 0, 0.1, 0, 2)
 plot_comparison(x1_ana, y1_ana, f1, g1, 'Predictor-Corrector Method vs Analytical Solution for Question 1', 'x', 'y', 'DATA\pridic_for_EQ1.png' )  
 
 # Question 2
+ff , gg = forward_euler(fun2, 0, 1, 0.1, 0, math.pi/5)
+plot_comparison(x2_ana, y2_ana, ff, gg, 'Euler Method vs Analytical Solution for Question 2', 'x', 'y', 'DATA\euler_for_EQ2.png' )
 f , g = predictor_corrector(fun2, 0, 1, 0.1, 0, math.pi/5)
 plot_comparison(x2_ana, y2_ana, f, g, 'Predictor-Corrector Method vs Analytical Solution for Question 2', 'x', 'y', 'DATA\pridic_for_EQ2.png' )
