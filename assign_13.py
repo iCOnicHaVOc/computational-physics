@@ -41,3 +41,5 @@ ff , gg = forward_euler(fun2, 0, 1, 0.1, 0, math.pi/5)
 plot_comparison(x2_ana, y2_ana, ff, gg, 'Euler Method vs Analytical Solution for Question 2', 'x', 'y', 'DATA\euler_for_EQ2.png' )
 f , g = predictor_corrector(fun2, 0, 1, 0.1, 0, math.pi/5)
 plot_comparison(x2_ana, y2_ana, f, g, 'Predictor-Corrector Method vs Analytical Solution for Question 2', 'x', 'y', 'DATA\pridic_for_EQ2.png' )
+
+# ====== MY SOLUTION IS SAVED IN DATA FOLDER ====== #
