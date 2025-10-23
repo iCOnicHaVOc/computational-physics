@@ -799,6 +799,8 @@ def forward_euler(f, x0, y0, h,a , b ):
 
 
 def predictor_corrector(f, x0, y0, h, a, b):
+    # y0 here is the initial value of y at x0
+    # b and a are range interval
     x = x0
     y = y0
     x_val = [x0]
@@ -814,3 +816,57 @@ def predictor_corrector(f, x0, y0, h, a, b):
         x_val.append(x)
         y_val.append(y)
     return x_val, y_val
+
+
+def RK4_non_coupled(f,x0,y0,h,a,b):
+    # y0 here is the initial value of y at x0
+    # b and a are range interval
+    # here x0 is a
+    x = x0
+    y = y0
+    x_val = [x0]
+    y_val = [y0]
+    while x < b:
+        k1 = h * f(x, y)
+        k2 = h * f(x + h/2, y + k1/2)
+        k3 = h * f(x + h/2, y + k2/2)
+        k4 = h * f(x + h, y + k3)
+        y = y + (k1 + 2*k2 + 2*k3 + k4) / 6
+        x = x + h
+        x_val.append(x)
+        y_val.append(y)
+    return x_val, y_val
+
+
+def RK4_coupled(f1, f2, x0, t0, v0, h, a, b):
+    # x0 and v0 are initial values of x and v at t0
+    # b and a are range interval of time
+    # here t0 is a
+    t = t0
+    x = x0 
+    v = v0
+    t_val = [t0]
+    x_val = [x0]
+    v_val = [v0]
+    while t < b:
+        k1x = h * f1(v)
+        k1v = h * f2(x, v)
+
+        k2x = h * f1(v + k1v/2)
+        k2v = h * f2(x + k1x/2, v + k1v/2)
+
+        k3x = h * f1(v + k2v/2)
+        k3v = h * f2(x + k2x/2, v + k2v/2)
+
+        k4x = h * f1(v + k3v)
+        k4v = h * f2(x + k3x, v + k3v)
+
+        x = x + (k1x + 2*k2x + 2*k3x + k4x) / 6
+        v = v + (k1v + 2*k2v + 2*k3v + k4v) / 6
+        t = t + h
+
+        t_val.append(t)
+        x_val.append(x)
+        v_val.append(v)
+    return t_val, x_val, v_val
+
