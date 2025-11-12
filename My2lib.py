@@ -870,3 +870,84 @@ def RK4_coupled(f1, f2, x0, t0, v0, h, a, b):
         v_val.append(v)
     return t_val, x_val, v_val
 
+
+def BV_shooting(RK4_coupled,T_0, T_L , L, guess, f1, f2, tol):
+    # Using RK4_coupled to solve the IVP with initial guess for z(0)
+    # T(0) = T_0, z(0) = guess
+    # tol is the tolerance btw actual and desired T(L)
+
+    guess_hi = []
+    guess_lo = []
+    T_high = []
+    T_low = []
+
+    x, T, z = RK4_coupled(f1, f2, T_0, guess, 0.0, 0.1, 0.0, L)
+    comp = T[-1] - T_L
+    print(T[-1], " with the guess ", guess)
+    if abs(comp) < tol:
+        print(f"Converged: T(L) = {T[-1]:.4f} with guess z(0) = {guess}")
+        return x, T, z
+
+    if T[-1] > T_L:
+        g_h = guess
+        guess_hi.append(g_h)
+        T_hi = T[-1]
+        T_high.append(T_hi)
+        print("Y_guess is Heigher", T[-1]," with the guess",g_h,"decrease the guess")
+        g_l = float(input("Enter lower guess value: "))
+        guess_lo.append(g_l)
+        x_n, T_lo, z_n = BV_shooting(RK4_coupled,T_0, T_L , L, g_l, f1, f2, tol)
+        T_low.append(T_lo)
+    else:
+        g_l = guess
+        guess_lo.append(g_l)
+        T_lo = T[-1]
+        T_low.append(T_lo)
+        print("Y_guess is Lower", T[-1]," with the guess",g_l,"increase the guess")
+        g_h = float(input("Enter higher guess value: "))
+        guess_hi.append(g_h)
+        x_n, T_hi, z_n = BV_shooting(RK4_coupled,T_0, T_L , L, g_h, f1, f2, tol)
+        T_high.append(T_hi)
+    
+    return guess_lo, T_low, guess_hi, T_high
+
+def linear_regression_log(x, y, sigma_i, moDel):
+    n = len(x)
+    if moDel == 'pow':
+        X = [math.log(xi) for xi in x]
+    elif moDel == 'expo':
+        X = x
+    Y = [math.log(yi) for yi in y]
+    sigma_sq_i = [si**2 for si in sigma_i]
+
+    S_X = sum(X[i]/sigma_sq_i[i] for i in range(n))
+    S_Y = sum(Y[i]/sigma_sq_i[i] for i in range(n))
+    S = sum([1/sigma_sq_i[i] for i in range(n)])
+    S_XY = sum((X[i] * Y[i])/sigma_sq_i[i] for i in range(n))
+    S_XX = sum((X[i]**2)/sigma_sq_i[i] for i in range(n))
+    S_YY = sum((Y[i]**2)/sigma_sq_i[i] for i in range(n))
+    Del = S*S_XX - S_X**2
+
+    a = (S_XX * S_Y - S_X * S_XY) / Del
+    b = (S * S_XY - S_X * S_Y) / Del
+
+    # Error in parameters
+    sigma_a = math.sqrt(S_XX / Del)
+    sigma_b = math.sqrt(S / Del)
+
+    # Pearson correlation coefficient
+    r_2 = S_XY**2/ (S_XX * S_YY)
+
+    return a, b, sigma_a, sigma_b, r_2
+
+
+def lagrange_interpolation(x_points, y_points, x):
+    n = len(x_points)
+    result = 0.0
+    for i in range(n):
+        term = y_points[i]
+        for j in range(n):
+            if j != i:
+                term *= (x - x_points[j]) / (x_points[i] - x_points[j])
+        result += term
+    return result
