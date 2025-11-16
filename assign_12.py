@@ -16,12 +16,21 @@ print("The value of the integral of question 1 using gaussian quadrature is", in
 
 int2 , st2 = gaussian_quad(fun2, 0, 1, 1e-9, 1.089429413)
 print("The value of the integral of question 2 using gaussian quadrature is", int2)
+
+int22 = int_simp(fun2, 0, 1, 24)
+'''
+print("The value of the integral of question 2 using Simpson's rule is", int22, "and is achieved in", 14, "steps")  
+a = 1.089429413 - int22
+print(a)
+'''
 tar_value = 1.089429413
 n_sim = 10
 
 while True:
     ints = int_simp(fun2, 0, 1, n_sim)
-    if abs(ints - tar_value) < 1e-9:
+    ints = round(ints, 9) # rounding to avoid floating point issues, surpprisingly made a difference
+    if abs(ints - tar_value) < 1e-10:
+        print('ints - tar_value =', ints - tar_value)
         break
     n_sim += 2 # must be even
 print("The value of the integral of question 2 using Simpson's rule is", ints, "and is achieved in", n_sim, "steps")
