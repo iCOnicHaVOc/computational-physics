@@ -841,6 +841,7 @@ def RK4_non_coupled(f,x0,y0,h,a,b):
 def RK4_coupled(f1, f2, x0, t0, v0, h, a, b):
     # x0 and v0 are initial values of x and v at t0
     # b and a are range interval of time
+    # f1 is d/dt = f1
     # here t0 is a
     t = t0
     x = x0 
@@ -871,45 +872,52 @@ def RK4_coupled(f1, f2, x0, t0, v0, h, a, b):
     return t_val, x_val, v_val
 
 
-def BV_shooting(RK4_coupled,T_0, T_L , L, guess, f1, f2, tol):
-    # Using RK4_coupled to solve the IVP with initial guess for z(0)
-    # T(0) = T_0, z(0) = guess
-    # tol is the tolerance btw actual and desired T(L)
-
-    guess_hi = []
-    guess_lo = []
-    T_high = []
-    T_low = []
-
-    x, T, z = RK4_coupled(f1, f2, T_0, guess, 0.0, 0.1, 0.0, L)
-    comp = T[-1] - T_L
-    print(T[-1], " with the guess ", guess)
-    if abs(comp) < tol:
-        print(f"Converged: T(L) = {T[-1]:.4f} with guess z(0) = {guess}")
-        return x, T, z
-
-    if T[-1] > T_L:
-        g_h = guess
-        guess_hi.append(g_h)
-        T_hi = T[-1]
-        T_high.append(T_hi)
-        print("Y_guess is Heigher", T[-1]," with the guess",g_h,"decrease the guess")
-        g_l = float(input("Enter lower guess value: "))
-        guess_lo.append(g_l)
-        x_n, T_lo, z_n = BV_shooting(RK4_coupled,T_0, T_L , L, g_l, f1, f2, tol)
-        T_low.append(T_lo)
-    else:
-        g_l = guess
-        guess_lo.append(g_l)
-        T_lo = T[-1]
-        T_low.append(T_lo)
-        print("Y_guess is Lower", T[-1]," with the guess",g_l,"increase the guess")
-        g_h = float(input("Enter higher guess value: "))
-        guess_hi.append(g_h)
-        x_n, T_hi, z_n = BV_shooting(RK4_coupled,T_0, T_L , L, g_h, f1, f2, tol)
-        T_high.append(T_hi)
+def BV_shooting(RK4_coupled,T_a, T_b , L, guess_l, guess_h, f1, f2 , tol, max_iter):
+    """
+    T_a         : Boundary value at x = 0
+    T_b         : Boundary value at x = L
+    guess_l     : 1st guess for z(0) = T'(0)
+    guess_h     : 2nd guess for z(0) = T'(0)
+    """
     
-    return guess_lo, T_low, guess_hi, T_high
+    # Evaluate for initial lower guess
+    t_low, T_low, z_low = RK4_coupled(f1, f2, T_a, 0, guess_l, 0.1, 0, L)
+    F_l = T_low[-1] - T_b  # F(guess_l)
+
+    if abs(F_l) < tol:
+        print(f"Yay!!, Initial LOWER guess already within tolerance!")
+        return t_low, T_low, z_low
+    
+    # Evaluate for initial higher guess
+    t_hig, T_hig, z_hig = RK4_coupled(f1, f2, T_a, 0, guess_h, 0.1, 0, L)
+    F_h = T_hig[-1] - T_b  # F(guess_h)
+
+    if abs(F_h) < tol:
+        print(f"Yay!!, Initial HIGHER guess already within tolerance!")
+        return t_hig, T_hig, z_hig
+    
+    if F_l * F_h > 0:
+        print(" Initial guesses are on the same side of root.")
+        return None, None, None
+
+    for _ in range(max_iter):
+        guess_mid = guess_l + ((guess_h - guess_l) / (F_h - F_l)) * (-F_l)
+
+        # Solve again with new guess
+        t_mid, T_mid, z_mid = RK4_coupled(f1, f2, T_a, 0, guess_mid, 0.1, 0, L)
+        F_m = T_mid[-1] - T_b
+
+        # Check convergence
+        if abs(F_m) < tol:
+            print(f"   Optimal slope z(0) ≈ {guess_mid},  Residual = {F_m}")
+            return t_mid, T_mid, z_mid
+
+        # Update guesses
+        guess_l, F_l = guess_h, F_h
+        guess_h, F_h = guess_mid, F_m
+
+    print(" Did NOT converge within max iterations.")
+    return t_mid, T_mid, z_mid
 
 def linear_regression_log(x, y, sigma_i, moDel):
     n = len(x)

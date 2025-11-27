@@ -3,8 +3,8 @@
 from My2lib import *
 
 # Question 1
+
 # Parameters
-'''
 alpha = 0.01 # in m^-2
 T_al = 20 # in deg C
 
@@ -18,7 +18,19 @@ T_0 = 40 # Temperature at x=0
 T_L = 200 # Temperature at x=L
 L = 10 # Length of the rod in m
 
-'''
+
+t,T,z = BV_shooting(RK4_coupled,T_0,T_L,L,-10,20,dT_dx,dz_dx,1e-6,50)
+for i in range(1, len(T)):
+    if T[i-1] < 100 <= T[i]:
+        x1, x2 = t[i-1], t[i]
+        T1, T2 = T[i-1], T[i]
+        x_100 = x1 + (100 - T1) * (x2 - x1) / (T2 - T1)
+        break
+
+print(f"Temperature reaches 100°C at x ≈ {x_100:.4f} meters")
+
+Plot(t,T)
+
 # Question 2
 
 L = 2.0
