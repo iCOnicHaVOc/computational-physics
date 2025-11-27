@@ -12,7 +12,44 @@ import math
 print()
 print('Solution for Q1\n')
 
+# Initial setup
+N = 5000
+left = N
+right = 0
+steps = 20000  # simulate many steps
+left_history = []
 
+# Generate random numbers with seed 7
+rand_vals, _ = LCG(7, steps)   # take only the random numbers, ignore indices
+
+# Simulation loop
+for r in rand_vals:
+    if left > 0 and right > 0:
+        if r < 0.5:
+            left -= 1
+            right += 1
+        else:
+            right -= 1
+            left += 1
+    elif left > 0:   # only left has particles
+        left -= 1
+        right += 1
+    elif right > 0:  # only right has particles
+        right -= 1
+        left += 1
+    left_history.append(left)
+
+
+Plot(range(len(left_history)), left_history,
+     "Particle Diffusion to Equilibrium",
+     "Steps", "Particles on Left Side",
+     'DATA/endsem_q1_plot.png')
+print('The plot is saved in DATA folder with name - endsem_q1_plot')
+
+# Final equilibrium state
+print(f"Final equilibrium approx: Left = {left}, Right = {right}")
+
+'''
 #Q2
 print()
 print('Solution for Q2\n')
@@ -109,7 +146,6 @@ for i in range(1, len(v_vals)):
         break
 
 print(f"Maximum height reached: {max_height:.2f} meters")
-print(y_vals,v_vals)
 Plot(v_vals,y_vals,"Velocity vs Height with Air Resistance","Velocity (m/s)","Height (m)",'DATA\endsem_q5_plot.png')
 print('The plot is saved in DATA folder with name - endsem_q5_plot')
 
@@ -186,3 +222,4 @@ h_fit = eval_poly(coeffs, r_fit)
 
 plot_comparison(r,h,r_fit,h_fit,"Polynomial Fit to Data",'r','h','DATA\endsem_q7_plot.png')
 print('The plot is saved in DATA folder with name - endsem_q7_plot')
+'''
