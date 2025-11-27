@@ -837,7 +837,6 @@ def RK4_non_coupled(f,x0,y0,h,a,b):
         y_val.append(y)
     return x_val, y_val
 
-
 def RK4_coupled(f1, f2, x0, t0, v0, h, a, b):
     # x0 and v0 are initial values of x and v at t0
     # b and a are range interval of time
@@ -959,3 +958,40 @@ def lagrange_interpolation(x_points, y_points, x):
                 term *= (x - x_points[j]) / (x_points[i] - x_points[j])
         result += term
     return result
+
+def poly_fit_least_squares(x, y, degree, sigma_i=None):
+    """
+    degree   : degree of the polynomial
+    sigma_i  : list of errors in y , 1 if not given
+    """
+    x = np.array(x, dtype=float)
+    y = np.array(y, dtype=float)
+
+    # Default sigma_i = 1 if not provided
+    if sigma_i is None:
+        sigma_i = np.ones_like(y)
+    else:
+        sigma_i = np.array(sigma_i, dtype=float)
+
+    # Design matrix
+    A = np.vstack([x ** i for i in range(degree + 1)]).T  # shape: (n, degree+1)
+    
+    # Weight matrix
+    W = np.diag(1 / sigma_i**2)
+
+    # Normal equation
+    ATA = A.T @ W @ A
+    ATY = A.T @ W @ y
+
+    # Solve coefficients
+    coeffs = np.linalg.solve(ATA, ATY)
+
+    # Errors (sqrt of diag of covariance matrix)
+    cov_matrix = np.linalg.inv(ATA)
+    sigma_a = np.sqrt(np.diag(cov_matrix))
+
+    # Chi-square
+    residuals = y - A @ coeffs
+    chi2 = np.sum((residuals / sigma_i) ** 2)
+
+    return coeffs, sigma_a, chi2
